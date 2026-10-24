@@ -32,6 +32,9 @@ Thumbs.db
 tmp/
 temp/
 
+# Separate portfolio repository
+portfolio-site/
+
 # Local Python dependencies
 .deps/
 
