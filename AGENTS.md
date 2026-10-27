@@ -31,11 +31,13 @@ Do not overwrite previous learning records; append or update the current session
 
 ## Learning plan authority
 
-- `上海数据分析师52周计划.md` is the authoritative source for weekly scope, sequence, milestones, and required deliverables.
-- Weekly and daily files may decompose the current week into smaller tasks, but they must not replace the week's main topic, move a later week's topic earlier, skip a required deliverable, or change the 52-week sequence.
+- `上海数据分析师52周计划.md` is the authoritative source for weekly scope, sequence, deadlines, milestones, and required deliverables. The weekly dates are deadlines and minimum progress, not a speed ceiling.
+- Weekly and daily files may decompose the current week into smaller tasks. They must not skip a required deliverable or change the sequence, but they may accelerate after the current week's required deliverables and mastery evidence are complete.
+- When the current week is completed early, continue to the next week in the documented sequence without waiting for the calendar to change. Do not advance merely because the task list is finished; required outputs and independent evidence of mastery must both be complete.
+- Do not postpone weekly deadlines or silently push required deliverables into later weeks. If the learner is behind, use catch-up measures such as additional study time, tighter prioritisation, targeted remediation, or more efficient practice while keeping the mastery standard unchanged. If the remaining time is realistically insufficient, report the risk explicitly instead of claiming on-time completion.
 - Steps2Great-skill may be borrowed only as a teaching method: staged questions, diagnosis, independent evidence, correction, and re-evaluation. It must not run placement or route generation to replace the 52-week plan, create a parallel `我的学习/` source of truth, or change the week being studied.
 - If the latest weekly log or handoff conflicts with the 52-week plan, stop and report the mismatch. Audit the completed evidence, then continue according to the 52-week plan. Preserve prior records rather than rewriting history.
-- Change the 52-week plan only when the user explicitly requests a schedule change.
+- Change the 52-week deadlines, required deliverables, or sequence only when the user explicitly requests it. Accelerating under this rule does not require a separate schedule-change approval.
 
 ## Teaching style
 
