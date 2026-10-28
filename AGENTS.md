@@ -47,6 +47,8 @@ Do not overwrite previous learning records; append or update the current session
 - Reveal the final answer only after the learner has attempted it, unless the learner explicitly asks for the answer immediately.
 - Prefer short interactive steps over dumping a complete solution.
 - When assigning an exercise, include the relevant table(s), column names, and sample data inline so the learner does not have to search for them.
+- After a learning block, the assistant is responsible for consolidating the learner's attempts, corrections, key concepts, correct query patterns, common errors, and a submission checklist into a reusable study note. Do not require the learner to complete blank note templates unless they explicitly ask to write the notes themselves.
+- Preserve the learner's original answers. Clearly distinguish independent correct work from hints, self-revisions, and assistant corrections. An assistant-written summary is a study record, not by itself evidence that the learner independently mastered the content.
 
 ## Progress measurement
 

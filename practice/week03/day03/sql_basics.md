@@ -68,3 +68,58 @@ FROM → WHERE → GROUP BY → HAVING → SELECT → ORDER BY
 3. 只考虑金额不低于 90 的订单，按 `status` 汇总总金额，只保留总金额不低于 300 的状态，并按总金额降序排列。
 
 先独立写出 3 条完整 SQL，不要先运行或核对答案。完成后发我批改。
+
+## 第 3 轮：去重计数与多条件排序
+
+### 小例子：`COUNT(*)` 与 `COUNT(DISTINCT 列)`
+
+使用另一组访问数据：
+
+| visit_id | user_id |
+|---:|---:|
+| 301 | 1 |
+| 302 | 1 |
+| 303 | 2 |
+| 304 | 3 |
+
+```sql
+SELECT COUNT(*) AS visit_count,
+       COUNT(DISTINCT user_id) AS user_count
+FROM visits;
+```
+
+结果是 `4` 次访问、`3` 名不同用户。`COUNT(*)` 数行，`COUNT(DISTINCT user_id)` 先对非 NULL 用户编号去重，再计数。
+
+### 第 3 轮 3 题
+
+7. 查询有过 `paid` 订单的不同客户数量，只返回这个数量，并把结果列命名为 `paid_customer_count`。
+8. 只考虑金额不低于 90 的订单，按 `status` 返回订单数、最高金额和最低金额；先按订单数降序，订单数相同时按状态升序。
+9. 查询 `paid` 和 `refunded` 订单，返回 `order_id`、`status`、`amount`、`customer_id`；先按状态升序，再按金额降序，最后按订单号升序。
+
+## 第 4 轮：聚合、去重计数与 IN 筛选
+
+### customers
+
+| customer_id | customer | city |
+|---:|---|---|
+| 1 | 张三 | 上海 |
+| 2 | 李四 | 北京 |
+| 3 | 王五 | 上海 |
+| 4 | 赵六 | 上海 |
+| 5 | 孙七 | 深圳 |
+| 6 | 周八 | 北京 |
+| 7 | 吴九 | 杭州 |
+
+继续使用上面的 `orders` 表。
+
+10. 查询所有 `paid` 订单的总订单数和不同客户数，结果列分别命名为 `order_count` 和 `customer_count`。
+11. 按 `status` 统计每个状态的订单数和不同客户数，先按订单数降序，订单数相同时按状态升序。
+12. 从 `customers` 中查询上海和北京客户，返回 `customer_id`、`customer`、`city`；先按城市升序，再按客户编号降序。
+
+## 第 5 轮：分组口径与结果别名
+
+继续使用上面的 `customers` 和 `orders` 表。
+
+13. 只看 `paid` 订单，按 `customer_id` 汇总订单数和总金额；只保留至少有 2 笔 paid 订单的客户，并按总金额降序排列。
+14. 按城市统计客户数量，返回城市和客户数；先按客户数降序，客户数相同时按城市升序。
+15. 查询所有 `paid` 订单的订单数、总金额和平均金额，并计算涉及的不同客户数。结果列分别命名为 `order_count`、`total_amount`、`avg_amount`、`customer_count`；平均金额保留两位小数。
