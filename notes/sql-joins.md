@@ -124,8 +124,57 @@ WHERE O.order_id IS NULL;
 - [ ] 聚合时普通字段是否都在 GROUP BY 中？
 - [ ] RIGHT JOIN、FULL JOIN 后要检查哪一侧会出现 NULL？
 
-## 9. 当前进度
+## 9. RIGHT JOIN
 
-- 已学习：INNER JOIN、LEFT JOIN、`ON`/`WHERE`、JOIN 与聚合。
-- 尚未系统学习：RIGHT JOIN、FULL OUTER JOIN、自连接和多表连接。
-- 第 4 周 6 道题最终通过，但首次提交完全正确 1/6；仍需新数据独立复评。
+`RIGHT JOIN` 保留右表全部行。右表有记录而左表没有匹配时，左表字段为 NULL。
+
+```sql
+SELECT C.customer, M.level
+FROM customers AS C
+RIGHT JOIN memberships AS M
+  ON C.customer_id = M.customer_id;
+```
+
+如果某会员的 `customer_id` 在 `customers` 中不存在，结果中 `C.customer` 为 NULL，但会员记录仍保留。
+
+RIGHT JOIN 通常可改写为两表交换后的 LEFT JOIN：
+
+```sql
+SELECT C.customer, M.level
+FROM memberships AS M
+LEFT JOIN customers AS C
+  ON C.customer_id = M.customer_id;
+```
+
+## 10. FULL OUTER JOIN 与 COALESCE
+
+`FULL OUTER JOIN` 同时保留左右两边全部行：
+
+- 两边匹配：正常返回。
+- 只在左表：右侧字段为 NULL。
+- 只在右表：左侧字段为 NULL。
+
+```sql
+SELECT COALESCE(C.customer_id, M.customer_id) AS customer_id,
+       C.customer,
+       M.level
+FROM customers AS C
+FULL OUTER JOIN memberships AS M
+  ON C.customer_id = M.customer_id
+ORDER BY customer_id;
+```
+
+`COALESCE` 返回第一个非 NULL 值：
+
+- 正常匹配或只有左表时，使用 `C.customer_id`。
+- 只有右表时，`C.customer_id` 为 NULL，因此使用 `M.customer_id`。
+
+FULL OUTER JOIN 的支持情况取决于数据库。MySQL 通常不支持它，可用 `LEFT JOIN ... UNION ALL RIGHT JOIN ... WHERE 左表键 IS NULL` 模拟；实际项目要按数据库版本选择写法。
+
+## 11. 当前进度
+
+- 已学习 INNER、LEFT、RIGHT、FULL OUTER JOIN 的保留范围和未匹配行为。
+- 已学习 RIGHT JOIN 到交换表顺序后 LEFT JOIN 的改写。
+- 已学习 `COALESCE` 与 FULL OUTER JOIN 的组合。
+- 第 4 周共 9 道题最终通过；第 1、2 天首次完全正确分别为 1/6 和 0/3，表名与列引用精度仍需加强。
+- 尚未系统学习：自连接、多表连接，以及反连接与聚合的复杂组合。
