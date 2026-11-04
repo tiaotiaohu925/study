@@ -171,10 +171,67 @@ ORDER BY customer_id;
 
 FULL OUTER JOIN 的支持情况取决于数据库。MySQL 通常不支持它，可用 `LEFT JOIN ... UNION ALL RIGHT JOIN ... WHERE 左表键 IS NULL` 模拟；实际项目要按数据库版本选择写法。
 
-## 11. 当前进度
+## 11. JOIN 后聚合
+
+LEFT JOIN 后聚合时：
+
+- `COUNT(右表主键)` 只统计真实匹配记录，零匹配得到 0。
+- `COUNT(*)` 会把 LEFT JOIN 产生的未匹配占位行也计为 1。
+- `SUM(右表数值列)` 会忽略 NULL，整组没有金额时返回 NULL。
+- `COALESCE(SUM(...), 0)` 用于把展示口径的 NULL 转为 0。
+
+```sql
+SELECT S.manager,
+       COUNT(T.sale_id) AS sale_count,
+       COALESCE(SUM(T.amount), 0) AS total_sales
+FROM shops AS S
+LEFT JOIN sales AS T
+  ON S.shop_id = T.shop_id
+GROUP BY S.shop_id, S.manager
+ORDER BY S.shop_id;
+```
+
+## 12. 三表连接
+
+三张表需要按连接链逐段连接：
+
+```sql
+FROM customers AS C
+LEFT JOIN orders AS O
+  ON C.customer_id = O.customer_id
+ AND O.status = 'paid'
+LEFT JOIN order_items AS I
+  ON O.order_id = I.order_id
+```
+
+关键检查：
+
+- `customers` 到 `orders` 使用 `customer_id`。
+- `orders` 到 `order_items` 使用 `order_id`。
+- 三表连接后的明细粒度可能是“一条订单商品”；先确定粒度，再做 GROUP BY。
+- 一张订单有多条商品时，直接 `COUNT(O.order_id)` 会重复计数，应使用 `COUNT(DISTINCT O.order_id)`。
+
+多表收入汇总：
+
+```sql
+SELECT C.customer_id,
+       C.customer,
+       COUNT(DISTINCT O.order_id) AS paid_order_count,
+       COALESCE(SUM(I.quantity * I.unit_price), 0) AS paid_revenue
+FROM customers AS C
+LEFT JOIN orders AS O
+  ON C.customer_id = O.customer_id
+ AND O.status = 'paid'
+LEFT JOIN order_items AS I
+  ON O.order_id = I.order_id
+GROUP BY C.customer_id, C.customer
+ORDER BY C.customer_id;
+```
+
+## 13. 当前进度
 
 - 已学习 INNER、LEFT、RIGHT、FULL OUTER JOIN 的保留范围和未匹配行为。
-- 已学习 RIGHT JOIN 到交换表顺序后 LEFT JOIN 的改写。
-- 已学习 `COALESCE` 与 FULL OUTER JOIN 的组合。
-- 第 4 周共 9 道题最终通过；第 1、2 天首次完全正确分别为 1/6 和 0/3，表名与列引用精度仍需加强。
-- 尚未系统学习：自连接、多表连接，以及反连接与聚合的复杂组合。
+- 已学习 JOIN 后计数、求和、NULL 处理、反连接和三表连接。
+- 第 4 周完成 14/25 题，全部修订后通过；首次正确率仍不稳定。
+- 当前高频错误是 `JOIN` 拼写、GROUP BY 完整性、COUNT 去重和表字段引用。
+- 下一步练习多表业务场景，重点验证结果粒度、未能连接到的中间记录和重复计数。
