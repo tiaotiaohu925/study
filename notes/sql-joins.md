@@ -228,10 +228,28 @@ GROUP BY C.customer_id, C.customer
 ORDER BY C.customer_id;
 ```
 
-## 13. 当前进度
+## 13. 条件聚合与多表汇总
+
+在保留所有商品或客户的同时，只累计某个状态的金额：
+
+```sql
+SUM(CASE WHEN O.status = 'paid' THEN I.quantity * I.unit_price ELSE 0 END)
+```
+
+同时统计多个状态时，可以并列多个条件聚合表达式。没有匹配金额时，`ELSE 0` 能让汇总列显示 0。
+
+多商品订单的正确订单数：
+
+```sql
+COUNT(DISTINCT CASE WHEN O.status = 'paid' THEN O.order_id END)
+```
+
+不能直接统计商品明细行或未经去重的订单号。
+
+## 14. 当前进度
 
 - 已学习 INNER、LEFT、RIGHT、FULL OUTER JOIN 的保留范围和未匹配行为。
-- 已学习 JOIN 后计数、求和、NULL 处理、反连接和三表连接。
-- 第 4 周完成 14/25 题，全部修订后通过；首次正确率仍不稳定。
-- 当前高频错误是 `JOIN` 拼写、GROUP BY 完整性、COUNT 去重和表字段引用。
-- 下一步练习多表业务场景，重点验证结果粒度、未能连接到的中间记录和重复计数。
+- 已学习 JOIN 后计数、求和、NULL 处理、反连接、三表连接、条件聚合和多表去重计数。
+- 第 4 周完成 25/25 题，全部修订后通过；首次提交完全正确仅 3/25。
+- 当前高频错误是 `JOIN`/`FROM` 拼写、表名、字段名、别名、GROUP BY 完整性、COUNT 去重和结果粒度。
+- 第 5 周先做 JOIN 错题复测，再学习子查询、UNION、CASE 和 NULL。
