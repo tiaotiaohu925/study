@@ -93,6 +93,22 @@ ORDER BY payment_count DESC;
 - `COUNT(column)` 忽略该列的 NULL。
 - `SUM(column)` 忽略 NULL；如果整组没有非 NULL 值，结果为 NULL。
 
+### `NOT IN` 的 NULL 风险
+
+```sql
+3 NOT IN (1, 2, NULL)
+```
+
+等价于：
+
+```text
+3 <> 1 AND 3 <> 2 AND 3 <> NULL
+= TRUE AND TRUE AND UNKNOWN
+= UNKNOWN
+```
+
+`WHERE` 只保留 TRUE，因此可能返回空集。找“没有匹配记录”时优先使用 `NOT EXISTS`。
+
 ## 6. UNION 与 UNION ALL
 
 - 两个查询列数必须相同，对应位置类型兼容。
@@ -122,7 +138,7 @@ ORDER BY customer_id;
 
 ## 8. 当前进度
 
-- 第 5 周完成 14/25 题。
-- 今天首次提交完全正确 11/14。
+- 第 5 周完成 20/25 题。
+- 第 5 周首次提交完全正确 15/20。
 - 已覆盖标量子查询、IN、NOT EXISTS、CASE、NULL、UNION 和 UNION ALL。
-- 下一步用业务场景题验证这些知识，而不是只重复语法模板。
+- 下一步完成 5 道混合业务场景题，并为每题说明结果粒度。
